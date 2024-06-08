@@ -1,12 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const quoteRoute = require("./routes/quote.route.js");
+const authRoute = require("./routes/auth.route.js");
 const app = express();
 require("dotenv").config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api/quote", quoteRoute);
+app.use("/api/auth", authRoute);
+
 
 
 
