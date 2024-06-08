@@ -16,6 +16,10 @@ const QuoteSchema = mongoose.Schema(
       required: true,
       default: "unknown",
     },
+    userid: {
+      type: String,
+      required: true,
+    },
     likes: {
       type: [String],
       default: [],

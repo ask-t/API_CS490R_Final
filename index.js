@@ -24,7 +24,7 @@ mongoose
     app.use("/api/quote", quoteRoute);
     app.use("/api/auth", authRoute);
     app.use(
-      "/api",
+      "/api/posts",
       passport.authenticate("jwt", { session: false }),
       postRoute
     ); // Changed "JWT" to "jwt"

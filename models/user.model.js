@@ -60,6 +60,10 @@ UserSchema.methods.comparePassword = function (password, callback) {
     callback(null, isMatch);
   });
 };
+UserSchema.methods.isAdmin = function () {
+  return this.role === "Admin";
+};
+
 
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

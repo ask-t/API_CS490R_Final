@@ -38,14 +38,26 @@ const createQuote = async (req, res) => {
 const updateQuote = async (req, res) => {
   try {
     const { id } = req.params;
-    const info = await Quote.findByIdAndUpdate(id, req.body);
-    if(!info) {
+    const quote = await Quote.findById(id);
+    if (!quote) {
       return res.status(404).json({ message: "Quote not found" });
     }
-    const updatedInfo = await Quote.findById(id);
-    res.status(200).json(updatedInfo);
-  }
-  catch(error) {
+
+    // Check if the logged-in user is the owner of the quote or an admin
+    if (
+      quote.userid.toString() !== req.user._id.toString() &&
+      !req.user.isAdmin()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this quote" });
+    }
+
+    // If authorized, proceed with update
+    await Quote.findByIdAndUpdate(id, req.body, { new: true }); // `new: true` to return the updated document
+    const updatedQuote = await Quote.findById(id);
+    res.status(200).json(updatedQuote);
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
@@ -53,14 +65,28 @@ const updateQuote = async (req, res) => {
 const deleteQuote = async (req, res) => {
   try {
     const { id } = req.params;
-    const info = await Quote.findByIdAndDelete(id);
-    if(!info) {
+    const quote = await Quote.findById(id);
+    if (!quote) {
       return res.status(404).json({ message: "Quote not found" });
     }
+
+    // Safely calling toString() with optional chaining and a fallback to prevent crashes
+    const quoteUserId = quote.userid?.toString();
+    const reqUserId = req.user?.userid?.toString();
+    console.log(quoteUserId, reqUserId);
+
+    // Check if the logged-in user is the owner of the quote or an admin
+    if (quoteUserId !== reqUserId && !req.user.isAdmin()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this quote" });
+    }
+
+    // If authorized, proceed with deletion
+    await Quote.findByIdAndDelete(id);
     res.status(200).json({ message: "Quote deleted successfully" });
-  }
-  catch(error){
-    res.status(500).json({message: error.message});
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
