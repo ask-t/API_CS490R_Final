@@ -1,9 +1,9 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-
+const config = require('./config.js');
 const User = require('../models/user.model.js');
 
-const secret = 'nodeauthsecret';
+const secret = config.secret;
 
 module.exports = (passport) => {
   var opts ={}
