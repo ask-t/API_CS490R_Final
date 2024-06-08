@@ -43,11 +43,11 @@ const updateQuote = async (req, res) => {
       return res.status(404).json({ message: "Quote not found" });
     }
 
+        const quoteUserId = quote.userid?.toString();
+        const reqUserId = req.user?.userid?.toString();
+
     // Check if the logged-in user is the owner of the quote or an admin
-    if (
-      quote.userid.toString() !== req.user._id.toString() &&
-      !req.user.isAdmin()
-    ) {
+    if (quoteUserId !== reqUserId && !req.user.isAdmin()) {
       return res
         .status(403)
         .json({ message: "Not authorized to update this quote" });
